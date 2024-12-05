@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Helmet Store</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        header .logo h1 {
+            margin: 0;
+        }
+
+        header nav ul {
+            list-style-type: none;
+            display: flex;
+            gap: 20px;
+        }
+
+        header nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+
+        header .cart button {
+            background-color: #ff9900;
+            border: none;
+            padding: 10px;
+            color: white;
+            cursor: pointer;
+        }
+
+        header .cart button:hover {
+            background-color: #ff7f00;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        .product-list {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .product-card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 200px;
+        }
+
+        .product-card img {
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        .product-card h2 {
+            margin: 10px 0;
+        }
+
+        .product-card .price {
+            color: #ff9900;
+            font-size: 1.2rem;
+        }
+
+        .product-card button {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .product-card button:hover {
+            background-color: #555;
+        }
+
+        .cart-popup {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 100%;
+            background-color: white;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            display: none;
+            flex-direction: column;
+        }
+
+        .cart-popup h3 {
+            margin-bottom: 20px;
+        }
+
+        .cart-popup ul {
+            list-style-type: none;
+            margin-bottom: 20px;
+            padding: 0;
+        }
+
+        .cart-popup ul li {
+            margin-bottom: 10px;
+        }
+
+        .cart-popup button {
+            background-color: #ff9900;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+
+        .cart-popup button:hover {
+            background-color: #ff7f00;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #333;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1>Helmet Store</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Products</a></li>
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="cart">
+            <button onclick="toggleCart()">
+                <span>🛒</span> Cart (<span id="cart-count">0</span>)
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <section class="product-list">
+            <div class="product-card" id="helmet-1">
+                <img src="helmet1.jpg" alt="Helmet 1">
+                <h2>Helmet A</h2>
+                <p class="price">$50</p>
+                <button onclick="addToCart('Helmet A', 50)">Add to Cart</button>
+            </div>
+            <div class="product-card" id="helmet-2">
+                <img src="helmet2.jpg" alt="Helmet 2">
+                <h2>Helmet B</h2>
+                <p class="price">$75</p>
+                <button onclick="addToCart('Helmet B', 75)">Add to Cart</button>
+            </div>
+            <div class="product-card" id="helmet-3">
+                <img src="helmet3.jpg" alt="Helmet 3">
+                <h2>Helmet C</h2>
+                <p class="price">$100</p>
+                <button onclick="addToCart('Helmet C', 100)">Add to Cart</button>
+            </div>
+        </section>
+
+        <div class="cart-popup" id="cart-popup">
+            <h3>Shopping Cart</h3>
+            <ul id="cart-items"></ul>
+            <p>Total: $<span id="total-price">0</span></p>
+            <button onclick="checkout()">Checkout</button>
+            <button onclick="toggleCart()">Close</button>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Helmet Store. All rights reserved.</p>
+    </footer>
+
+    <script>
+        let cart = [];
+        let totalPrice = 0;
+
+        function addToCart(name, price) {
+            cart.push({ name, price });
+            totalPrice += price;
+
+            // Update cart count and total price
+            document.getElementById('cart-count').textContent = cart.length;
+            document.getElementById('total-price').textContent = totalPrice;
+
+            // Update cart items display
+            updateCartItems();
+        }
+
+        function updateCartItems() {
+            const cartItems = document.getElementById('cart-items');
+            cartItems.innerHTML = '';
+
+            cart.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = `${item.name} - $${item.price}`;
+                cartItems.appendChild(li);
+            });
+        }
+
+        function toggleCart() {
+            const cartPopup = document.getElementById('cart-popup');
+            cartPopup.style.display = (cartPopup.style.display === 'flex') ? 'none' : 'flex';
+        }
+
+        function checkout() {
+            alert('Proceeding to checkout with total amount of $' + totalPrice);
+            cart = [];
+            totalPrice = 0;
+
+            // Reset the cart count and total price
+            document.getElementById('cart-count').textContent = cart.length;
+            document.getElementById('total-price').textContent = totalPrice;
+
+            // Clear cart items
+            updateCartItems();
+            toggleCart();
+        }
+    </script>
+</body>
+</html>
